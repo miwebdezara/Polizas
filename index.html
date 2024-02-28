@@ -5,8 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pólizas de Seguro</title>
     <link rel="stylesheet" href="css/estilo.css">
-    <link type="text/xml" href="envio.xml">
-    <link type="text/xsl" href="xsl/polizas.xsl">
+    <script>
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) 
+                var xmlDoc = this.responseXML;
+                var xslFile = "xsl/polizas.xsl";
+                var xslhttp = new XMLHttpRequest();
+                xslhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var xslDoc = this.responseXML;
+                        var xsltProcessor = new XSLTProcessor();
+                        xsltProcessor.importStylesheet(xslDoc);
+                        var resultDocument = xsltProcessor.transformToFragment(xmlDoc, document);
+                        document.getElementById("tablaPolizas").appendChild(resultDocument);
+                    }
+                };
+                xslhttp.open("GET", xslFile, true);
+                xslhttp.send();
+            }
+        ;
+        xhttp.open("GET", "envio.xml", true);
+        xhttp.send();
+    </script>
 </head>
 <body>
     <h1>Pólizas de Seguro</h1>
